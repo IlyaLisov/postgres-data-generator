@@ -20,7 +20,7 @@ public class PostgresDataGeneratorApplication implements CommandLineRunner {
     @Autowired
     private DataSourceConfig dataSourceConfig;
 
-    private static final int USERS_AMOUNT = 1000;
+    private static final int USERS_AMOUNT = 10000;
     private static final int FRIENDS_LIST_SIZE = 100;
 
     List<String> names = List.of(
@@ -130,7 +130,8 @@ public class PostgresDataGeneratorApplication implements CommandLineRunner {
                 JOIN users_followers uf1 ON uf1.user_id = u.id
                 """);
         for (int i = 2; i <= level; i++) {
-            sqlQuery.append("JOIN users_followers uf").append(i).append(" ON uf").append(i).append(".user_id = uf").append(i - 1).append(".followed_id\n");
+            sqlQuery.append("JOIN users_followers uf").append(i).append(" ON uf").append(i).append(".user_id = uf")
+                    .append(i - 1).append(".followed_id\n");
         }
         sqlQuery.append("JOIN users f ON f.id = uf").append(level).append(".followed_id\n");
         sqlQuery.append("WHERE u.id = ?;");
@@ -140,7 +141,8 @@ public class PostgresDataGeneratorApplication implements CommandLineRunner {
         statement.setLong(1, index);
         ResultSet resultSet = statement.executeQuery();
         while (resultSet.next()) {
-            User user = new User(resultSet.getLong("id"), resultSet.getString("name"));
+            resultSet.getLong("id");
+            resultSet.getString("name");
         }
         long end = System.currentTimeMillis();
         log.info("Retrieve {} {} level join objects in {} s", (int) Math.pow(FRIENDS_LIST_SIZE, level), level, (end - start) / 1000.0);
